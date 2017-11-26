@@ -25,6 +25,5 @@ object AkkaClusterSeed extends App with Logging {
       cluster.joinSeedNodes(addresses)
     case None =>
       error("Can not join the cluster because the SEED_NODES environment was not set. Exiting")
-
   }
 }
