@@ -42,12 +42,4 @@ libraryDependencies ++= Seq (
   ,"com.typesafe" % "config" % "1.2.0"
 )
 
-javaOptions in Universal ++= Seq(
-    // -J params will be added as jvm parameters
-    "-J-Xmx128m",
-    "-J-Xms128m",
-    "-J-XX:+UnlockExperimentalVMOptions",
-    "-J-XX:+UseCGroupMemoryLimitForHeap"
-)
-
 enablePlugins(JavaAppPackaging)
