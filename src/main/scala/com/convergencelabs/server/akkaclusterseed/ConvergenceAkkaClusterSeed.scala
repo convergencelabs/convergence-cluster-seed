@@ -7,8 +7,13 @@ import grizzled.slf4j.Logging
 import scala.util.Try
 import scala.util.control.NonFatal
 import scala.util.Failure
+import scala.concurrent.Await
+import scala.concurrent.duration.FiniteDuration
+import java.util.concurrent.TimeUnit
 
 object AkkaClusterSeed extends Logging {
+  var system: Option[ActorSystem] = None
+  var cluster: Option[Cluster] = None
 
   def main(args: Array[String]) {
     Try {
@@ -18,10 +23,15 @@ object AkkaClusterSeed extends Logging {
 
           val ClusterName = "Convergence";
 
-          val system = ActorSystem(ClusterName);
-          val cluster = Cluster(system)
-
-          system.actorOf(AkkaClusterListener.props());
+          val _system = ActorSystem(ClusterName);
+          system = Some(_system)
+          info("Actor system started")
+          
+          _system.actorOf(AkkaClusterListener.props());
+          
+          scala.sys.addShutdownHook {
+            this.shutdown()
+          }
 
           val seedNodes = seedNodesEnv.split(",").toList
           val addresses = seedNodes.map { seedNode =>
@@ -38,14 +48,30 @@ object AkkaClusterSeed extends Logging {
           }
 
           info(s"Joining akka cluster with seed nodes: ${addresses}")
-          cluster.joinSeedNodes(addresses)
+
+          info("Creating and joining cluster")
+          val _cluster = Cluster(_system)
+          _cluster.joinSeedNodes(addresses)
+          cluster = Some(_cluster)
         case None =>
           error("Can not join the cluster because the AKKA_CLUSTER_SEED_NODES environment was not set. Exiting")
       }
-  
     }.recover {
       case NonFatal(cause) =>
         error("Error starting Convergence Akka Cluster Seed", cause)
+        shutdown();
+    }
+  }
+
+  def shutdown(): Unit = {
+    cluster.foreach {
+      info("Leaving cluster.")
+      c => c.leave(c.selfAddress)
+    }
+
+    system.foreach { s =>
+      info("Shutting down actor system")
+      Await.result(s.whenTerminated, FiniteDuration(30, TimeUnit.SECONDS))
     }
   }
 }
