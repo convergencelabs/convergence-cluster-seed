@@ -10,6 +10,7 @@ import scala.util.Failure
 import scala.concurrent.Await
 import scala.concurrent.duration.FiniteDuration
 import java.util.concurrent.TimeUnit
+import org.apache.logging.log4j.LogManager
 
 object ConvergenceAkkaClusterSeed extends Logging {
   var system: Option[ActorSystem] = None
@@ -73,6 +74,8 @@ object ConvergenceAkkaClusterSeed extends Logging {
       info("Shutting down actor system")
       Await.result(s.whenTerminated, FiniteDuration(30, TimeUnit.SECONDS))
     }
+    
+    LogManager.shutdown();
   }
 }
   
