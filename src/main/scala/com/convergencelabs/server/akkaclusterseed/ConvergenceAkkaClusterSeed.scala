@@ -1,16 +1,19 @@
 package com.convergencelabs.server.akkaclusterseed
 
+import java.util.concurrent.TimeUnit
+
+import scala.concurrent.Await
+import scala.concurrent.duration.FiniteDuration
+import scala.util.Try
+import scala.util.control.NonFatal
+
+import org.apache.logging.log4j.LogManager
+
 import akka.actor.ActorSystem
 import akka.actor.Address
 import akka.cluster.Cluster
 import grizzled.slf4j.Logging
-import scala.util.Try
-import scala.util.control.NonFatal
-import scala.util.Failure
-import scala.concurrent.Await
-import scala.concurrent.duration.FiniteDuration
-import java.util.concurrent.TimeUnit
-import org.apache.logging.log4j.LogManager
+import java.util.concurrent.TimeoutException
 
 object ConvergenceAkkaClusterSeed extends Logging {
   var system: Option[ActorSystem] = None
@@ -27,9 +30,9 @@ object ConvergenceAkkaClusterSeed extends Logging {
           val _system = ActorSystem(ClusterName);
           system = Some(_system)
           info("Actor system started")
-          
+
           _system.actorOf(AkkaClusterListener.props());
-          
+
           scala.sys.addShutdownHook {
             this.shutdown()
           }
@@ -72,9 +75,16 @@ object ConvergenceAkkaClusterSeed extends Logging {
 
     system.foreach { s =>
       info("Shutting down actor system")
-      Await.result(s.whenTerminated, FiniteDuration(30, TimeUnit.SECONDS))
+      Try {
+        Await.result(s.whenTerminated, FiniteDuration(10, TimeUnit.SECONDS))
+      } recover {
+        case cause: TimeoutException =>
+          warn("The actor system did not shut down in the allowed time.")
+      } map { _ =>
+        info("Convergence Akka Cluster Seed is shutdown.")
+      }
     }
-    
+
     LogManager.shutdown();
   }
 }
