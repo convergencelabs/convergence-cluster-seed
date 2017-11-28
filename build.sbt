@@ -17,7 +17,7 @@ scalacOptions ++= Seq(
 )
 
 val akka = "2.5.7"
-val log4j = "2.4.1"
+val log4j = "2.10.0"
 
 /* dependencies */
 libraryDependencies ++= Seq (

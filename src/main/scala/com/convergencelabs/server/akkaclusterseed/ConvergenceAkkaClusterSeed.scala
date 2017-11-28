@@ -11,7 +11,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.FiniteDuration
 import java.util.concurrent.TimeUnit
 
-object AkkaClusterSeed extends Logging {
+object ConvergenceAkkaClusterSeed extends Logging {
   var system: Option[ActorSystem] = None
   var cluster: Option[Cluster] = None
 
