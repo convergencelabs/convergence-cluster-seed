@@ -3,8 +3,9 @@ sbtPod { label ->
   runInNode(label) {
   
     stage('SBT Build') {
+      injectIvyCredentials()
+            
       container('sbt') {
-        injectIvyCredentials()
         sh 'sbt compile stage'
       }
     }
