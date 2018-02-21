@@ -27,7 +27,7 @@ sbtPod { label ->
 
     stage('Docker Push') {
       container('docker') {
-        dockerPush(containerName, ["latest", scmVars.GIT_COMMIT])
+        dockerPush(containerName, ["latest", env.GIT_COMMIT])
       }
     }
   }
