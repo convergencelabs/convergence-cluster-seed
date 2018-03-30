@@ -2,10 +2,9 @@ sbtPod { label ->
   def containerName = "convergence-server-cluster-seed"
   runInNode(label) {
   
-    stage('SBT Build') {
-      injectIvyCredentials()
-            
+    stage('SBT Build') {    
       container('sbt') {
+        injectIvyCredentials()
         sh 'sbt compile stage'
       }
     }
