@@ -6,4 +6,4 @@ EXPOSE 2551
 
 WORKDIR /opt/convergence/
 
-ENTRYPOINT ["/opt/convergence/bin/convergence-akka-cluster-seed"]
+ENTRYPOINT ["/opt/convergence/bin/convergence-server-cluster-seed"]

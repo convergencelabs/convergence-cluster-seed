@@ -1,6 +1,7 @@
-package com.convergencelabs.server.akkaclusterseed
+package com.convergencelabs.server.clusterseed
 
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 import scala.concurrent.Await
 import scala.concurrent.duration.FiniteDuration
@@ -13,7 +14,6 @@ import akka.actor.ActorSystem
 import akka.actor.Address
 import akka.cluster.Cluster
 import grizzled.slf4j.Logging
-import java.util.concurrent.TimeoutException
 
 object ConvergenceAkkaClusterSeed extends Logging {
   var system: Option[ActorSystem] = None
@@ -21,9 +21,9 @@ object ConvergenceAkkaClusterSeed extends Logging {
 
   def main(args: Array[String]) {
     Try {
-      Option(System.getenv().get("AKKA_CLUSTER_SEED_NODES")) match {
+      Option(System.getenv().get("CLUSTER_SEED_NODES")) match {
         case Some(seedNodesEnv) =>
-          info(s"Starting Convergence Akka Cluster Seed")
+          info(s"Starting Convergence Server Cluster Seed")
 
           val ClusterName = "Convergence";
 
@@ -51,18 +51,18 @@ object ConvergenceAkkaClusterSeed extends Logging {
             Address("akka.tcp", ClusterName, hostname, port)
           }
 
-          info(s"Joining akka cluster with seed nodes: ${addresses}")
+          info(s"Joining cluster with seed nodes: ${addresses}")
 
           info("Creating and joining cluster")
           val _cluster = Cluster(_system)
           _cluster.joinSeedNodes(addresses)
           cluster = Some(_cluster)
         case None =>
-          error("Can not join the cluster because the AKKA_CLUSTER_SEED_NODES environment was not set. Exiting")
+          error("Can not join the cluster because the CLUSTER_SEED_NODES environment was not set. Exiting")
       }
     }.recover {
       case NonFatal(cause) =>
-        error("Error starting Convergence Akka Cluster Seed", cause)
+        error("Error starting Convergence Server Cluster Seed", cause)
         shutdown();
     }
   }

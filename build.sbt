@@ -1,5 +1,5 @@
-name := "convergence-akka-cluster-seed"
-organization := "com.convergencelabs"
+name := "convergence-server-cluster-seed"
+organization := "com.convergencelabs.server"
 version := "0.1"
 
 /* scala versions and options */

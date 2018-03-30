@@ -1,4 +1,4 @@
-package com.convergencelabs.server.akkaclusterseed;
+package com.convergencelabs.server.clusterseed;
 
 import akka.actor.Actor
 import akka.actor.ActorLogging

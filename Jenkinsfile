@@ -1,5 +1,5 @@
 sbtPod { label ->
-  def containerName = "convergence-akka-cluster-seed"
+  def containerName = "convergence-server-cluster-seed"
   runInNode(label) {
   
     stage('SBT Build') {
