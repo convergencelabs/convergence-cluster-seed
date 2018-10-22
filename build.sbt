@@ -3,7 +3,7 @@ organization := "com.convergencelabs.server"
 version := "0.1"
 
 /* scala versions and options */
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.6"
 
 // These options will be used for *all* versions.
 scalacOptions ++= Seq(
@@ -16,7 +16,7 @@ scalacOptions ++= Seq(
   ,"-language:postfixOps"
 )
 
-val akka = "2.5.7"
+val akka = "2.5.13"
 val log4j = "2.10.0"
 
 /* dependencies */
@@ -33,13 +33,13 @@ libraryDependencies ++= Seq (
   ,"org.apache.logging.log4j" % "log4j-api" % log4j              // Apache 2.0
   ,"org.apache.logging.log4j" % "log4j-core" % log4j             // Apache 2.0
   ,"org.apache.logging.log4j" % "log4j-jul" % log4j              // Apache 2.0
-  ,"org.clapper"              % "grizzled-slf4j_2.11" % "1.0.2"  // BSD
-  
+  ,"org.clapper"              %% "grizzled-slf4j" % "1.3.2"      // BSD
+
   // -- json --
-  ,"org.json4s" %% "json4s-jackson" % "3.2.10"
-  
+  ,"org.json4s" %% "json4s-jackson" % "3.5.4"
+
   // -- config --
-  ,"com.typesafe" % "config" % "1.2.0"
+  ,"com.typesafe" % "config" % "1.3.3"
 )
 
 enablePlugins(JavaAppPackaging)
