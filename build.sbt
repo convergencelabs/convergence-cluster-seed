@@ -27,6 +27,7 @@ libraryDependencies ++= Seq (
   ,"com.typesafe.akka" %% "akka-actor" % akka
   ,"com.typesafe.akka" %% "akka-slf4j" % akka
   ,"com.typesafe.akka" %% "akka-cluster" % akka
+  ,"com.typesafe.akka" %% "akka-cluster-tools" % akka
 
   // -- Logging --
   ,"org.apache.logging.log4j" % "log4j-slf4j-impl" % log4j       // Apache 2.0
