@@ -1,5 +1,5 @@
 sbtPod { label ->
-  def containerName = "convergence-server-cluster-seed"
+  def containerName = "convergence-cluster-seed"
   runInNode(label) {
   
     stage('SBT Build') {    
