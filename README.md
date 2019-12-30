@@ -5,14 +5,14 @@
 # Convergence Cluster Seed
 This project contains the Convergence Cluster seed. It is a lightweight [Akka](https://akka.io/) cluster node that can be used to bootstrap the cluster. The project contains almost no code other than that required to start up the akka cluster. This makes it very unlikely that the node will crash, and minimizes the amount of memory needed to maintain reliable cluster seed nodes.
 
-# Building
+## Building
 The project can be built using the build script:
 
 ```shell script
 scripts/build.sh
 ```
 
-# Running
+## Running
 
 - `CLUSTER_SEED_NODES`: A comma separated list of seed nodes. For example `host1,host2`
 - `AKKA_LOG_LEVEL`: A Log4J Log Level such as `INFO`, `DEBUG`
