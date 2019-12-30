@@ -1,24 +1,29 @@
-package com.convergencelabs.server.clusterseed;
+/*
+ * Copyright (c) 2019 - Convergence Labs, Inc.
+ *
+ * This file is part of the Convergence Cluster Seed, which is released under
+ * the terms of the GNU General Public License version 3 (GPLv3). A copy
+ * of the GPLv3 should have been provided along with this file, typically
+ * located in the "LICENSE" file, which is part of this source code package.
+ * Alternatively, see <https://www.gnu.org/licenses/gpl-3.0.html> for the
+ * full text of the GPLv3 license, if it was not provided.
+ */
 
-import akka.actor.Actor
-import akka.actor.ActorLogging
-import akka.actor.Props
+package com.convergencelabs.convergence.clusterseed
+
+import akka.actor.{Actor, ActorLogging, Props}
 import akka.cluster.Cluster
-import akka.cluster.ClusterEvent.InitialStateAsEvents
-import akka.cluster.ClusterEvent.MemberEvent
-import akka.cluster.ClusterEvent.MemberRemoved
-import akka.cluster.ClusterEvent.MemberUp
-import akka.cluster.ClusterEvent.UnreachableMember
+import akka.cluster.ClusterEvent._
 
 object AkkaClusterListener {
    def props(): Props = {
-     Props(new AkkaClusterListener());
+     Props(new AkkaClusterListener())
   }
 }
 
 class AkkaClusterListener extends Actor with ActorLogging {
 
-  val cluster = Cluster(context.system);
+  private[this] val cluster = Cluster(context.system)
 
   override def preStart(): Unit = {
     cluster.subscribe(

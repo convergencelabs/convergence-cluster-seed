@@ -1,21 +1,29 @@
-package com.convergencelabs.server.clusterseed
+/*
+ * Copyright (c) 2019 - Convergence Labs, Inc.
+ *
+ * This file is part of the Convergence Cluster Seed, which is released under
+ * the terms of the GNU General Public License version 3 (GPLv3). A copy
+ * of the GPLv3 should have been provided along with this file, typically
+ * located in the "LICENSE" file, which is part of this source code package.
+ * Alternatively, see <https://www.gnu.org/licenses/gpl-3.0.html> for the
+ * full text of the GPLv3 license, if it was not provided.
+ */
 
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
+package com.convergencelabs.convergence.clusterseed
+
+import java.util.concurrent.{TimeUnit, TimeoutException}
+
+import akka.actor.{ActorSystem, Address}
+import akka.cluster.Cluster
+import grizzled.slf4j.Logging
+import org.apache.logging.log4j.LogManager
 
 import scala.concurrent.Await
 import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import org.apache.logging.log4j.LogManager
-
-import akka.actor.ActorSystem
-import akka.actor.Address
-import akka.cluster.Cluster
-import grizzled.slf4j.Logging
-
-object ConvergenceAkkaClusterSeed extends Logging {
+object ConvergenceClusterSeed extends Logging {
   var system: Option[ActorSystem] = None
   var cluster: Option[Cluster] = None
 
@@ -23,15 +31,15 @@ object ConvergenceAkkaClusterSeed extends Logging {
     Try {
       Option(System.getenv().get("CLUSTER_SEED_NODES")) match {
         case Some(seedNodesEnv) =>
-          info(s"Starting Convergence Server Cluster Seed")
+          info(s"Starting Convergence Cluster Seed")
 
-          val ClusterName = "Convergence";
+          val ClusterName = "Convergence"
 
-          val _system = ActorSystem(ClusterName);
+          val _system = ActorSystem(ClusterName)
           system = Some(_system)
           info("Actor system started")
 
-          _system.actorOf(AkkaClusterListener.props());
+          _system.actorOf(AkkaClusterListener.props())
 
           scala.sys.addShutdownHook {
             this.shutdown()
@@ -51,18 +59,18 @@ object ConvergenceAkkaClusterSeed extends Logging {
             Address("akka.tcp", ClusterName, hostname, port)
           }
 
-          info(s"Joining cluster with seed nodes: ${addresses}")
+          info(s"Joining cluster with seed nodes: $addresses")
 
           info("Creating and joining cluster")
           val _cluster = Cluster(_system)
           _cluster.joinSeedNodes(addresses)
           cluster = Some(_cluster)
         case None =>
-          error("Can not join the cluster because the CLUSTER_SEED_NODES environment was not set. Exiting")
+          error("Can not join the cluster because the CLUSTER_SEED_NODES environment variable was not set. Exiting")
       }
     }.recover {
       case NonFatal(cause) =>
-        error("Error starting Convergence Server Cluster Seed", cause)
+        error("Error starting Convergence Cluster Seed", cause)
         shutdown();
     }
   }
@@ -85,7 +93,6 @@ object ConvergenceAkkaClusterSeed extends Logging {
       }
     }
 
-    LogManager.shutdown();
+    LogManager.shutdown()
   }
 }
-  
