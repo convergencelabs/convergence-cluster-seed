@@ -13,11 +13,9 @@ scripts/build.sh
 ```
 
 ## Running
-
 - `CLUSTER_SEED_NODES`: A comma separated list of seed nodes. For example `host1,host2`
 - `AKKA_LOG_LEVEL`: A Log4J Log Level such as `INFO`, `DEBUG`
-- `AKKA_EXTERNAL_HOSTNAME`: The hostname that external hosts will connect to the cluster seed. Required if the cluster seed is behind a proxy, or deployed in a docker environment like Kubernetes.
-- `AKKA_PORT`: The TCP Port used for Akka Remoting.
+- `EXTERNAL_HOSTNAME`: The hostname that external hosts will connect to the cluster seed. Required if the cluster seed is behind a proxy, or deployed in a docker environment like Kubernetes.
 
 To run the container execute the following command:
 
