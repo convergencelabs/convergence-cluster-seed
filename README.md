@@ -23,7 +23,18 @@ To run the container execute the following command:
 docker run --rm \
   --publish 2551:2551 \
   --env CLUSTER_SEED_NODES="localhost" \
-  --env AKKA_EXTERNAL_HOSTNAME="localhost" \
-  --env AKKA_PORT="2551" \
+  --env EXTERNAL_HOSTNAME="localhost" \
   convergencelabs/convergence-cluster-seed
 ```
+
+## Support
+[Convergence Labs](https://convergencelabs.com) provides several different channels for support:
+
+- Please use the [Convergence Community Forum](https://forum.convergence.io) for general and technical questions, so the whole community can benefit.
+- For paid dedicated support or custom development services, [contact us](https://convergence.io/contact-sales/) directly.
+- Email <support@convergencelabs.com> for all other inquiries.
+
+## License
+The Convergence Server is licensed under the [GNU Public License v3](LICENSE) (GPLv3) license. Refer to the [LICENSE](LICENSE) for the specific terms and conditions of the license.
+
+The Convergence Server is also available under a Commercial License. If you are interested in a non-open source license please contact us at [Convergence Labs](https://convergencelabs.com).
