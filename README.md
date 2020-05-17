@@ -3,6 +3,7 @@
 </div>
 
 # Convergence Cluster Seed
+[![Build Status](https://travis-ci.org/convergencelabs/convergence-cluster-seed.svg?branch=master)](https://travis-ci.org/convergencelabs/convergence-cluster-seed)
 This project contains the Convergence Cluster seed. It is a lightweight [Akka](https://akka.io/) cluster node that can be used to bootstrap the cluster. The project contains almost no code other than that required to start up the akka cluster. This makes it very unlikely that the node will crash, and minimizes the amount of memory needed to maintain reliable cluster seed nodes.
 
 ## Building
@@ -32,6 +33,7 @@ docker run --rm \
 
 - Please use the [Convergence Community Forum](https://forum.convergence.io) for general and technical questions, so the whole community can benefit.
 - For paid dedicated support or custom development services, [contact us](https://convergence.io/contact-sales/) directly.
+- Chat with us on the [Convergence Public Slack](https://slack.convergence.io).
 - Email <support@convergencelabs.com> for all other inquiries.
 
 ## License
