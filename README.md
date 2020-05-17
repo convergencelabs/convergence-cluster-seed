@@ -4,6 +4,7 @@
 
 # Convergence Cluster Seed
 [![Build Status](https://travis-ci.org/convergencelabs/convergence-cluster-seed.svg?branch=master)](https://travis-ci.org/convergencelabs/convergence-cluster-seed)
+
 This project contains the Convergence Cluster seed. It is a lightweight [Akka](https://akka.io/) cluster node that can be used to bootstrap the cluster. The project contains almost no code other than that required to start up the akka cluster. This makes it very unlikely that the node will crash, and minimizes the amount of memory needed to maintain reliable cluster seed nodes.
 
 ## Building
