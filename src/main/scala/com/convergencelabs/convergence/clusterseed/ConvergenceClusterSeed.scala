@@ -56,7 +56,7 @@ object ConvergenceClusterSeed extends Logging {
               (seedNode, 2551)
             }
 
-            Address("akka.tcp", ClusterName, hostname, port)
+            Address("akka", ClusterName, hostname, port)
           }
 
           info(s"Joining cluster with seed nodes: $addresses")
