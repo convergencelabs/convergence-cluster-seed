@@ -1,4 +1,4 @@
-FROM openjdk:11.0.4-jdk
+FROM openjdk:11.0.7-jdk
 
 ADD stage /opt/convergence/
 
