@@ -71,7 +71,7 @@ object ConvergenceClusterSeed extends Logging {
     }.recover {
       case NonFatal(cause) =>
         error("Error starting Convergence Cluster Seed", cause)
-        shutdown();
+        shutdown()
     }
   }
 
@@ -86,7 +86,7 @@ object ConvergenceClusterSeed extends Logging {
       Try {
         Await.result(s.whenTerminated, FiniteDuration(10, TimeUnit.SECONDS))
       } recover {
-        case cause: TimeoutException =>
+        case _: TimeoutException =>
           warn("The actor system did not shut down in the allowed time.")
       } map { _ =>
         info("Convergence Akka Cluster Seed is shutdown.")
