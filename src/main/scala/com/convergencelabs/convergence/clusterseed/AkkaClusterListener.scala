@@ -11,40 +11,35 @@
 
 package com.convergencelabs.convergence.clusterseed
 
-import akka.actor.{Actor, ActorLogging, Props}
-import akka.cluster.Cluster
-import akka.cluster.ClusterEvent._
+import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{Behavior, PostStop}
+import akka.cluster.ClusterEvent.{MemberEvent, MemberRemoved, MemberUp}
+import akka.cluster.typed.{Cluster, Subscribe, Unsubscribe}
+import grizzled.slf4j.Logging
 
-object AkkaClusterListener {
-   def props(): Props = {
-     Props(new AkkaClusterListener())
-  }
+/**
+ * The [[AkkaClusterListener]] Behavior subscribes to cluster events and
+ * debug logs them for debugging purposes.
+ */
+object AkkaClusterListener extends Logging {
+  def apply(cluster: Cluster): Behavior[MemberEvent] =
+    Behaviors.setup { context =>
+      cluster.subscriptions ! Subscribe(context.self, classOf[MemberEvent])
+      Behaviors.receiveMessage[MemberEvent] {
+        case MemberUp(member) =>
+          debug(s"Akka Cluster Member with role '${member.roles}' is Up: ${member.address}")
+          Behaviors.same
+        case MemberRemoved(member, previousStatus) =>
+          debug(s"Akka Cluster Member is Removed: ${member.address} after $previousStatus")
+          Behaviors.same
+        case msg: MemberEvent =>
+          debug(msg.toString)
+          Behaviors.same
+      }.receiveSignal {
+        case (context, PostStop) =>
+          cluster.subscriptions ! Unsubscribe(context.self)
+          Behaviors.same
+      }
+    }
 }
 
-class AkkaClusterListener extends Actor with ActorLogging {
-
-  private[this] val cluster = Cluster(context.system)
-
-  override def preStart(): Unit = {
-    cluster.subscribe(
-      self,
-      initialStateMode = InitialStateAsEvents,
-      classOf[MemberEvent],
-      classOf[UnreachableMember])
-  }
-
-  override def postStop(): Unit = {
-    cluster.unsubscribe(self)
-  }
-
-  def receive: Receive = {
-    case MemberUp(member) =>
-      log.debug(s"Member with role '${member.roles}' is Up: ${member.address}")
-    case UnreachableMember(member) =>
-      log.debug("Member detected as unreachable: {}", member)
-    case MemberRemoved(member, previousStatus) =>
-      log.debug("Member is Removed: {} after {}", member.address, previousStatus)
-    case msg: MemberEvent =>
-      log.debug(msg.toString)
-  }
-}

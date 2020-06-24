@@ -5,7 +5,7 @@
 # Convergence Cluster Seed
 [![Build Status](https://travis-ci.org/convergencelabs/convergence-cluster-seed.svg?branch=master)](https://travis-ci.org/convergencelabs/convergence-cluster-seed)
 
-This project contains the Convergence Cluster seed. It is a lightweight [Akka](https://akka.io/) cluster node that can be used to bootstrap the cluster. The project contains almost no code other than that required to start up the akka cluster. This makes it very unlikely that the node will crash, and minimizes the amount of memory needed to maintain reliable cluster seed nodes.
+This project contains the Convergence Cluster seed. It is a lightweight [Akka](https://akka.io/) cluster node that can be used to bootstrap the cluster. The project contains almost no code other than that required to start up the Akka cluster. This makes it very unlikely that the node will crash, and minimizes the amount of memory needed to maintain reliable cluster seeds.
 
 ## Building
 The project can be built using the build script:
@@ -15,19 +15,23 @@ scripts/build.sh
 ```
 
 ## Running
-- `CLUSTER_SEED_NODES`: A comma separated list of seed nodes. For example `host1,host2`
+- `CLUSTER_SEED_NODES`: A comma separated list of seed nodes. For example, `host1,host2:25521`. The format of each entry is `hostname[:port]`. If the port is omitted, it will default to 25520, which is the default port for Akka Artery Remoting.
 - `AKKA_LOG_LEVEL`: A Log4J Log Level such as `INFO`, `DEBUG`
-- `EXTERNAL_HOSTNAME`: The hostname that external hosts will connect to the cluster seed. Required if the cluster seed is behind a proxy, or deployed in a docker environment like Kubernetes.
+- `EXTERNAL_HOSTNAME`: The hostname external hosts will connect to the cluster seed. Required if the cluster seed is behind a proxy, or deployed in a docker environment like Kubernetes.
+- `EXTERNAL_PORT`: The port external hosts will connect to the cluster seed. Required if the cluster seed is behind a proxy, or deployed in a docker environment like Kubernetes.
 
 To run the container execute the following command:
 
 ```shell script
 docker run --rm \
-  --publish 2551:2551 \
+  --publish 25520:25520 \
   --env CLUSTER_SEED_NODES="localhost" \
   --env EXTERNAL_HOSTNAME="localhost" \
+  --env EXTERNAL_PORT="25520" \
   convergencelabs/convergence-cluster-seed
 ```
+
+*Note: If set, the `EXTERNAL_PORT` should match the Docker external port mapped to in the `--publish` option.*
 
 ## Support
 [Convergence Labs](https://convergencelabs.com) provides several different channels for support:

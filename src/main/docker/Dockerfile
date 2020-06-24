@@ -2,7 +2,7 @@ FROM openjdk:11.0.7-jdk
 
 ADD stage /opt/convergence/
 
-EXPOSE 2551
+EXPOSE 25520
 
 WORKDIR /opt/convergence/
 

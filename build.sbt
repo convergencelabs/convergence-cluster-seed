@@ -3,7 +3,7 @@ organizationName := "Convergence Labs, Inc."
 organizationHomepage := Some(url("http://convergencelabs.com"))
 
 name := "convergence-cluster-seed"
-version := "1.0.1"
+version := "1.0.0-SNAPSHOT"
 
 description := "Convergence Cluster Seed"
 homepage := Some(url("https://convergence.io"))
@@ -15,8 +15,7 @@ scmInfo := Some(ScmInfo(
   url("https://github.com/convergencelabs/convergence-cluster-seed"),
   "https://github.com/convergencelabs/convergence-cluster-seed.git"))
 
-scalaVersion := "2.12.10"
-
+scalaVersion := "2.13.2"
 
 // These options will be used for *all* versions.
 scalacOptions ++= Seq(
@@ -29,31 +28,22 @@ scalacOptions ++= Seq(
   ,"-language:postfixOps"
 )
 
-val akka = "2.6.4"
+val akka = "2.6.6"
 val log4j = "2.13.1"
 
 /* dependencies */
 libraryDependencies ++= Seq (
-
   // -- Akka --
-  "com.typesafe.akka" %% "akka-testkit" % akka % "test"         // Apache 2.0
-  ,"com.typesafe.akka" %% "akka-actor" % akka                   // Apache 2.0
-  ,"com.typesafe.akka" %% "akka-slf4j" % akka                   // Apache 2.0
-  ,"com.typesafe.akka" %% "akka-cluster" % akka                 // Apache 2.0
-  ,"com.typesafe.akka" %% "akka-cluster-tools" % akka           // Apache 2.0
+   "com.typesafe.akka"          %% "akka-actor-typed"    % akka        // Apache 2.0
+  ,"com.typesafe.akka"          %% "akka-cluster-typed"  % akka        // Apache 2.0
+  ,"com.typesafe.akka"          %% "akka-slf4j"          % akka        // Apache 2.0
 
   // -- Logging --
-  ,"org.apache.logging.log4j" % "log4j-slf4j-impl" % log4j       // Apache 2.0
-  ,"org.apache.logging.log4j" % "log4j-api" % log4j              // Apache 2.0
-  ,"org.apache.logging.log4j" % "log4j-core" % log4j             // Apache 2.0
-  ,"org.apache.logging.log4j" % "log4j-jul" % log4j              // Apache 2.0
-  ,"org.clapper"              %% "grizzled-slf4j" % "1.3.2"      // BSD
-
-  // -- json --
-  ,"org.json4s" %% "json4s-jackson" % "3.5.4"                    // Apache 2.0
-
-  // -- config --
-  ,"com.typesafe" % "config" % "1.3.3"                           // Apache 2.0
+  ,"org.apache.logging.log4j"   % "log4j-slf4j-impl"     % log4j       // Apache 2.0
+  ,"org.apache.logging.log4j"   % "log4j-api"            % log4j       // Apache 2.0
+  ,"org.apache.logging.log4j"   % "log4j-core"           % log4j       // Apache 2.0
+  ,"org.apache.logging.log4j"   % "log4j-jul"            % log4j       // Apache 2.0
+  ,"org.clapper"                %% "grizzled-slf4j"      % "1.3.4"     // BSD
 )
 
 enablePlugins(JavaAppPackaging, UniversalDeployPlugin)

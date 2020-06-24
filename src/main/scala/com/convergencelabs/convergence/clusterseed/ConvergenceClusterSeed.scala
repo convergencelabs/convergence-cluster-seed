@@ -13,8 +13,9 @@ package com.convergencelabs.convergence.clusterseed
 
 import java.util.concurrent.{TimeUnit, TimeoutException}
 
-import akka.actor.{ActorSystem, Address}
-import akka.cluster.Cluster
+import akka.actor.Address
+import akka.actor.typed.ActorSystem
+import akka.cluster.typed.{Cluster, Leave}
 import grizzled.slf4j.Logging
 import org.apache.logging.log4j.LogManager
 
@@ -23,23 +24,38 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 import scala.util.control.NonFatal
 
+/**
+ * The ConvergenceClusterSeed is the main entry point for a lightweight
+ * Akka Cluster Seed Node. Seed nodes are required to bootstrap the Akka
+ * cluster and having stable persistent seed nodes in a distributed
+ * Akka system is critical.  Nodes that host a lot of application
+ * business logic are more likely to crash and also typically consume
+ * more resources.  If desired this class can be used to launch a small
+ * stable seed node that contains no business functionality, and is much
+ * less likely to crash.
+ *
+ * The system assumes that the CLUSTER_SEED_NODES environment variable is
+ * set. It is a comma separated list of hostnames and ports of the seed
+ * nodes.  The format is "hostname[:port],hostname[:port],...". For
+ * example, "host1,host2:25521". The port will default to port 25520 if
+ * not specified as this is the default Akka port for the Artery
+ * remoting library.
+ */
 object ConvergenceClusterSeed extends Logging {
-  var system: Option[ActorSystem] = None
-  var cluster: Option[Cluster] = None
+  private[this] val ActorSystemName = "Convergence"
 
-  def main(args: Array[String]) {
+  private[this] var system: Option[ActorSystem[Nothing]] = None
+  private[this] var cluster: Option[Cluster] = None
+
+  def main(args: Array[String]): Unit = {
     Try {
       Option(System.getenv().get("CLUSTER_SEED_NODES")) match {
         case Some(seedNodesEnv) =>
           info(s"Starting Convergence Cluster Seed")
 
-          val ClusterName = "Convergence"
-
-          val _system = ActorSystem(ClusterName)
+          val _system = ActorSystem[Nothing](GuardianBehavior(), ActorSystemName)
           system = Some(_system)
-          info("Actor system started")
-
-          _system.actorOf(AkkaClusterListener.props())
+          info("Convergence actor system started.")
 
           scala.sys.addShutdownHook {
             this.shutdown()
@@ -53,20 +69,20 @@ object ConvergenceClusterSeed extends Logging {
               val port = parts(1).toInt
               (hostname, port)
             } else {
-              (seedNode, 2551)
+              (seedNode, 25520)
             }
 
-            Address("akka", ClusterName, hostname, port)
+            Address("akka", ActorSystemName, hostname, port)
           }
 
-          info(s"Joining cluster with seed nodes: $addresses")
+          info(s"Joining cluster with seed nodes: [${addresses.map(_.toString).mkString(", ")}]")
 
-          info("Creating and joining cluster")
-          val _cluster = Cluster(_system)
-          _cluster.joinSeedNodes(addresses)
-          cluster = Some(_cluster)
+          cluster = Some(Cluster(_system))
+
+          info("Convergence Cluster Seed Started")
         case None =>
-          error("Can not join the cluster because the CLUSTER_SEED_NODES environment variable was not set. Exiting")
+          error("Can not join the cluster because the CLUSTER_SEED_NODES environment variable was not set. Exiting.")
+          System.exit(1)
       }
     }.recover {
       case NonFatal(cause) =>
@@ -75,21 +91,22 @@ object ConvergenceClusterSeed extends Logging {
     }
   }
 
-  def shutdown(): Unit = {
-    cluster.foreach {
-      info("Leaving cluster.")
-      c => c.leave(c.selfAddress)
+  private[this] def shutdown(): Unit = {
+    info("Shutting down the Convergence Cluster Seed")
+    cluster.foreach { c =>
+      info("Leaving the Convergence Cluster")
+      c.manager ! Leave(c.selfMember.address)
     }
 
     system.foreach { s =>
-      info("Shutting down actor system")
+      info("Terminating the Akka Actor System")
       Try {
         Await.result(s.whenTerminated, FiniteDuration(10, TimeUnit.SECONDS))
       } recover {
         case _: TimeoutException =>
-          warn("The actor system did not shut down in the allowed time.")
+          warn("The actor system did not shut down in the allotted time.")
       } map { _ =>
-        info("Convergence Akka Cluster Seed is shutdown.")
+        info("Convergence Akka Cluster Seed is shutdown")
       }
     }
 
