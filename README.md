@@ -17,10 +17,10 @@ scripts/build.sh
 ## Running
 - **`CLUSTER_SEED_NODES`**: A comma separated list of seed nodes. For example, `host1,host2:25521`. The format of each entry is `hostname[:port]`. If the port is omitted, it will default to 25520, which is the default port for Akka Artery Remoting.
 - **`AKKA_LOG_LEVEL`**: A Log4J Log Level such as `INFO`, `DEBUG`.
-- **`BIND_HOSTNAME`**: The hostname that Akka will bind to. Defaults to `0.0.0.0`.
-- **`BIND_PORT`**: The port Akka will bind to. Defaults to `25520`.
-- **`EXTERNAL_HOSTNAME`**: The hostname external hosts will connect to the cluster seed. Required if the cluster seed is behind a proxy, or deployed in a docker environment like Kubernetes.
-- **`EXTERNAL_PORT`**: The port external hosts will connect to the cluster seed. Required if the cluster seed is behind a proxy, or deployed in a docker environment like Kubernetes.
+- **`REMOTING_BIND_HOSTNAME`**: The hostname Akka will bind to. Defaults to `0.0.0.0`.
+- **`REMOTING_BIND_PORT`**: The port Akka will bind to. Defaults to `25520`.
+- **`REMOTING_EXTERNAL_HOSTNAME`**: The hostname external hosts will connect to the cluster seed. Required if the cluster seed is behind a proxy, or deployed in a docker environment like Kubernetes.
+- **`REMOTING_EXTERNAL_PORT`**: The port external hosts will connect to the cluster seed. Required if the cluster seed is behind a proxy, or deployed in a docker environment like Kubernetes.
 
 To run the container execute the following command:
 

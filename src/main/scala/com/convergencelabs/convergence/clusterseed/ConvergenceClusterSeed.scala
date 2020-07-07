@@ -16,11 +16,13 @@ import java.util.concurrent.{TimeUnit, TimeoutException}
 import akka.actor.Address
 import akka.actor.typed.ActorSystem
 import akka.cluster.typed.{Cluster, Leave}
+import com.typesafe.config.{ConfigFactory, ConfigValueFactory}
 import grizzled.slf4j.Logging
 import org.apache.logging.log4j.LogManager
 
 import scala.concurrent.Await
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -53,14 +55,6 @@ object ConvergenceClusterSeed extends Logging {
         case Some(seedNodesEnv) =>
           info(s"Starting Convergence Cluster Seed")
 
-          val _system = ActorSystem[Nothing](GuardianBehavior(), ActorSystemName)
-          system = Some(_system)
-          info("Convergence actor system started.")
-
-          scala.sys.addShutdownHook {
-            this.shutdown()
-          }
-
           val seedNodes = seedNodesEnv.split(",").toList
           val addresses = seedNodes.map { seedNode =>
             val (hostname, port) = if (seedNode.contains(":")) {
@@ -72,11 +66,31 @@ object ConvergenceClusterSeed extends Logging {
               (seedNode, 25520)
             }
 
-            Address("akka", ActorSystemName, hostname, port)
+            Address("akka", ActorSystemName, hostname, port).toString
+          }
+          val baseConfig = ConfigFactory.load()
+          val config = baseConfig
+            .withValue("akka.cluster.seed-nodes", ConfigValueFactory.fromIterable(addresses.asJava))
+
+          val _system = ActorSystem[Nothing](GuardianBehavior(), ActorSystemName, config)
+          system = Some(_system)
+
+          info("Convergence actor system started")
+
+          val bindPort = config.getInt("akka.remote.artery.bind.port")
+          val bindHostname = config.getString("akka.remote.artery.bind.hostname")
+
+          val canonicalPort = config.getInt("akka.remote.artery.canonical.port")
+          val canonicalHostname = config.getString("akka.remote.artery.canonical.hostname")
+
+          info(s"Bind Address: '$bindHostname:$bindPort'")
+          info(s"Canonical Address: '$canonicalHostname:$canonicalPort'")
+
+          scala.sys.addShutdownHook {
+            this.shutdown()
           }
 
-          info(s"Joining cluster with seed nodes: [${addresses.map(_.toString).mkString(", ")}]")
-
+          info(s"Joining cluster with seed nodes: [${addresses.mkString(", ")}]")
           cluster = Some(Cluster(_system))
 
           info("Convergence Cluster Seed Started")
@@ -102,13 +116,15 @@ object ConvergenceClusterSeed extends Logging {
       info("Terminating the Akka Actor System")
       Try {
         Await.result(s.whenTerminated, FiniteDuration(10, TimeUnit.SECONDS))
-      } recover {
+      }.recover {
         case _: TimeoutException =>
           warn("The actor system did not shut down in the allotted time.")
-      } map { _ =>
-        info("Convergence Akka Cluster Seed is shutdown")
+        case cause =>
+          error("Error terminating the actor system", cause)
       }
     }
+
+    info("Convergence Cluster Seed is shutdown")
 
     LogManager.shutdown()
   }

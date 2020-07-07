@@ -24,6 +24,7 @@ import grizzled.slf4j.Logging
 object AkkaClusterListener extends Logging {
   def apply(cluster: Cluster): Behavior[MemberEvent] =
     Behaviors.setup { context =>
+      debug("AkkaClusterListener starting")
       cluster.subscriptions ! Subscribe(context.self, classOf[MemberEvent])
       Behaviors.receiveMessage[MemberEvent] {
         case MemberUp(member) =>
