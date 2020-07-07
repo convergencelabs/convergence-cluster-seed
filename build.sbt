@@ -30,6 +30,7 @@ scalacOptions ++= Seq(
 
 val akka = "2.6.6"
 val log4j = "2.13.1"
+val jackson = "2.10.4"
 
 /* dependencies */
 libraryDependencies ++= Seq (
@@ -44,6 +45,7 @@ libraryDependencies ++= Seq (
   ,"org.apache.logging.log4j"   % "log4j-core"           % log4j       // Apache 2.0
   ,"org.apache.logging.log4j"   % "log4j-jul"            % log4j       // Apache 2.0
   ,"org.clapper"                %% "grizzled-slf4j"      % "1.3.4"     // BSD
+  ,"com.fasterxml.jackson.core" % "jackson-databind"     % jackson     // Apache 2.0
 )
 
 enablePlugins(JavaAppPackaging, UniversalDeployPlugin)
