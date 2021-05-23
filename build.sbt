@@ -3,7 +3,7 @@ organizationName := "Convergence Labs, Inc."
 organizationHomepage := Some(url("http://convergencelabs.com"))
 
 name := "convergence-cluster-seed"
-version := "1.0.0-rc.7"
+version := "1.0.0-rc.8"
 
 description := "Convergence Cluster Seed"
 homepage := Some(url("https://convergence.io"))
@@ -15,7 +15,7 @@ scmInfo := Some(ScmInfo(
   url("https://github.com/convergencelabs/convergence-cluster-seed"),
   "https://github.com/convergencelabs/convergence-cluster-seed.git"))
 
-scalaVersion := "2.13.2"
+scalaVersion := "2.13.5"
 
 // These options will be used for *all* versions.
 scalacOptions ++= Seq(
@@ -28,9 +28,9 @@ scalacOptions ++= Seq(
   ,"-language:postfixOps"
 )
 
-val akka = "2.6.6"
-val log4j = "2.13.1"
-val jackson = "2.10.4"
+val akka = "2.6.14"
+val log4j = "2.14.1"
+val jackson = "2.11.4"
 
 /* dependencies */
 libraryDependencies ++= Seq (
@@ -50,5 +50,5 @@ libraryDependencies ++= Seq (
 
 enablePlugins(JavaAppPackaging, UniversalDeployPlugin)
 
-mainClass in Compile := Some("com.convergencelabs.convergence.clusterseed.ConvergenceClusterSeed")
-discoveredMainClasses in Compile := Seq()
+Compile / mainClass := Some("com.convergencelabs.convergence.clusterseed.ConvergenceClusterSeed")
+Compile / discoveredMainClasses := Seq()
