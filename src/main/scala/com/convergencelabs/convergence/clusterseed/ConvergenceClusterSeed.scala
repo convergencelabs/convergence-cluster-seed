@@ -116,10 +116,11 @@ object ConvergenceClusterSeed extends Logging {
       info("Terminating the Akka Actor System")
       Try {
         Await.result(s.whenTerminated, FiniteDuration(10, TimeUnit.SECONDS))
+        ()
       }.recover {
         case _: TimeoutException =>
           warn("The actor system did not shut down in the allotted time.")
-        case cause =>
+        case cause: Throwable =>
           error("Error terminating the actor system", cause)
       }
     }
