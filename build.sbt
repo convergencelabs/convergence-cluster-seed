@@ -3,7 +3,7 @@ organizationName := "Convergence Labs, Inc."
 organizationHomepage := Some(url("http://convergencelabs.com"))
 
 name := "convergence-cluster-seed"
-version := "1.0.0-rc.8"
+version := "1.0.0-rc.9"
 
 description := "Convergence Cluster Seed"
 homepage := Some(url("https://convergence.io"))
