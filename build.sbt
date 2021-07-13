@@ -28,7 +28,7 @@ scalacOptions ++= Seq(
   ,"-language:postfixOps"
 )
 
-val akka = "2.6.14"
+val akka = "2.6.15"
 val log4j = "2.14.1"
 val jackson = "2.11.4"
 
